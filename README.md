@@ -1,1 +1,1 @@
-Using Prototypical Networks
+Using Prototypical Networks for informed classification
