@@ -14,7 +14,29 @@ from config import *
 from dataloader import *
 
 
-def train():
+def inference(args):
+    
+    tokenizer = AutoTokenizer.from_pretrained(args.model)
+    
+    model=ProtoClassifier()
+
+    train_dataset=ProtoDataset(args,args.save_path)
+    
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
+                            drop_last=False, pin_memory=False, 
+                            num_workers=0, collate_fn=collate_fn)    
+    for idx, batch in enumerate(train_loader):
+        print(batch['input_ids'].shape)
+        
+        output=model()
+        
+        
+        
+
+
+
+
+def train(args):
     
     device='mps' if torch.backends.mps.is_available() else 0
     
@@ -28,18 +50,18 @@ def train():
     test_dataset=ProtoDataset(args,tokenizer,args.val_path)
     
     
-    train_loader = DataLoader(train_dataset, batch_size=model_args.batch_size, 
+    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
                             drop_last=False, pin_memory=False, 
                             num_workers=0, collate_fn=collate_fn)    
     
     
-    val_loader = DataLoader(train_dataset, batch_size=model_args.batch_size, 
+    val_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
                             drop_last=False, pin_memory=False, 
                             num_workers=0, collate_fn=collate_fn)   
     
     
 
-    test_loader = DataLoader(train_dataset, batch_size=model_args.batch_size, 
+    test_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
                             drop_last=False, pin_memory=False, 
                             num_workers=0, collate_fn=collate_fn)   
     
@@ -87,4 +109,11 @@ def train():
                 
         
         val_loss/=len(val_dataset)
-        
+
+
+
+if __name__=="__main__":
+    
+    
+    args=model_parse_args()
+    inference(args)      
