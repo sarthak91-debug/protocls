@@ -114,11 +114,12 @@ def map_labels(data):
 
 class ProtoDataset(Dataset):
     
-    def __init__(self,args,tokenizer,path):
+    def __init__(self,args,path):
         
-        self.path=path
+        self.path=args.path
         self.raw_path=args.raw_path
-        
+        self.tokenizer= AutoTokenizer.from_pretrained(args.model)
+
         if os.path.exists(self.path):
             if 'train' in self.path or 'val' in self.path or 'test' in self.path:
                 self.data=proto_dataset(self.path)
@@ -126,9 +127,7 @@ class ProtoDataset(Dataset):
             else:
                 self.data=proto_dataset(self.raw_path)
                         
-        self.tokenizer=tokenizer
-        
-        
+
     def __len__(self):
         
         return len(self.data)
@@ -160,11 +159,11 @@ def collate_fn(batch):
     
     _attention_ids=[item['attention_mask'][0] for item in batch]
     
-    input_ids=pad_sequence(_input_ids,batch_first=True).unsqueeze(1)
+    input_ids=pad_sequence(_input_ids,batch_first=True)
     
-    token_ids=pad_sequence(_token_ids,batch_first=True).unsqueeze(1)
+    token_ids=pad_sequence(_token_ids,batch_first=True)
 
-    attention_ids=pad_sequence(_attention_ids,batch_first=True).unsqueeze(1)
+    attention_ids=pad_sequence(_attention_ids,batch_first=True)
     
     
     return {
@@ -182,9 +181,8 @@ if __name__=="__main__":
     
     args=model_parse_args()    
     
-    tokenizer = AutoTokenizer.from_pretrained(args.model)
     
-    train_dataset=ProtoDataset(args,tokenizer,args.save_path)
+    train_dataset=ProtoDataset(args,args.save_path)
     
     train_loader = DataLoader(train_dataset, batch_size=args.batch_size, 
                             drop_last=False, pin_memory=False, 
