@@ -1,3 +1,3 @@
-Using Prototypical Networks for informed classification
+Using Prototypical Networks for informed classification and recommendation
 
-Coming soon
+We are gonnna be working on using Prototyplical networks for classiication and recommendation using mahalanbolis and l2 loss
